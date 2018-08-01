@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+              xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd"> 
+
+    <!-- Bean definitions go here -->
+    <tx:annotation-driven />  
+    <context:component-scan base-package="com.sg.bessieblog" />
+    <bean id="dataSource"
+          class="org.apache.commons.dbcp2.BasicDataSource">
+          <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+          <property name = "url" value ="jdbc:mysql://localhost:3306/BessieBlogTest"/>
+          <property name="username" value="root" />
+          <property name="password" value="root" />
+          <property name="initialSize" value="5" />
+          <property name="maxTotal" value="10" />
+    </bean>
+    
+    <bean id = "transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+       
+    </bean>
+    
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    
+    <!--Dao de Beans-->
+    <bean id="blogDaoImpl"
+          class="com.sg.bessieblog.dao.BlogDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    <bean id="blogHashtagDaoImpl"
+          class="com.sg.bessieblog.dao.BlogHashtagDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    <bean id="categoryDaoImpl"
+          class="com.sg.bessieblog.dao.CategoryDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    <bean id="hashtagDaoImpl"
+          class="com.sg.bessieblog.dao.HashtagDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    <bean id="roleDaoImpl"
+          class="com.sg.bessieblog.dao.RoleDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    <bean id="staticPageDaoImpl"
+          class="com.sg.bessieblog.dao.StaticPageDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    <bean id="userDaoImpl"
+          class="com.sg.bessieblog.dao.UserDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    
+    <bean id="imageDao" class="com.sg.bessieblog.dao.ImageDaoImplementation">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+    
+    <!--Beans de Service -->
+
+    <bean id="blogServiceImpl"
+          class="com.sg.bessieblog.service.BlogServiceImpl">
+        <property name="blogDao" ref="blogDaoImpl" />
+        <property name="categoryService" ref="categoryServiceImpl" />
+        <property name="BlogHashtagDao" ref="blogHashtagDaoImpl" />
+        <property name="hashtagService" ref="hashtagServiceImpl" />
+        <property name="UserService" ref="userServiceImpl" />
+        <property name="StaticPageService" ref="staticPageServiceImpl" />
+    </bean>
+    <bean id="categoryServiceImpl"
+          class="com.sg.bessieblog.service.CategoryServiceImpl">
+        <property name="categoryDao" ref="categoryDaoImpl" />
+    </bean>
+    <bean id="hashtagServiceImpl"
+          class="com.sg.bessieblog.service.HashtagServiceImpl">
+        <property name="hashtagDao" ref="hashtagDaoImpl" />
+        <property name="BlogHashtagDao" ref="blogHashtagDaoImpl" />
+    </bean>
+    <bean id="roleServiceImpl"
+          class="com.sg.bessieblog.service.RoleServiceImpl">
+        <property name="roleDao" ref="roleDaoImpl" />
+        <property name="StaticPageService" ref="staticPageServiceImpl" />
+    </bean>
+    <bean id="staticPageServiceImpl"
+          class="com.sg.bessieblog.service.StaticPageServiceImpl">
+        <property name="staticPageDao" ref="staticPageDaoImpl" />
+        <property name="categoryService" ref="categoryServiceImpl" />
+        <property name="userService" ref="userServiceImpl" />
+        <property name="BlogService" ref="blogServiceImpl" />
+        <property name="RoleService" ref="roleServiceImpl" />
+    </bean>
+    <bean id="userServiceImpl"
+          class="com.sg.bessieblog.service.UserServiceImpl">
+        <property name="userDao" ref="userDaoImpl" />
+        <property name="StaticPageService" ref="staticPageServiceImpl" />
+        <property name="roleService" ref="roleServiceImpl" />
+    </bean>
+    
+    
+    
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
+</beans>
